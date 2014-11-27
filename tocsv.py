@@ -10,7 +10,7 @@ import pandas as pd
 
 def process(directory, filename, force=False, noheader=False):
     fin = os.path.join(directory, filename)
-    folderout = os.path.join('./output',directory[2:])
+    folderout = os.path.join('./csvout',directory[2:])
     if not os.path.exists(folderout) : 
         os.makedirs(folderout)
     fout = os.path.join(folderout, filename[:-5]+ '.csv')
@@ -45,9 +45,6 @@ def run():
         if len(fs) == 0 : continue
 
         for f in fs:
-            # if f in excl_list  :
-            #     print('file in exclusion list: ', dirpath,f)
-            #     continue
             noheader = f in WITH_NOHEADER
             process(dirpath,f, noheader=noheader)
     print('END')
