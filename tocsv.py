@@ -26,7 +26,7 @@ def process(directory, filename, force=False, noheader=False):
     FIRST_ROW = 6 if noheader else 7  
     for row in ws.rows[:-1]: # it brings a new method: iter_rows()
 
-        if row[0].row < FIRST_ROW or (row[0].row > FIRST_ROW and (row[1].value is None or (len(str(row[1].value)) == 0))) : 
+        if row[0].row < FIRST_ROW or (row[0].row > FIRST_ROW and (row[1].value is None or (len(str(row[1].value)) == 0))) or (row[1].value=='مجموع أصوات القائمة'): 
             continue
 
         line = [cell.value for cell in row if cell.value is not None and cell.value != '']
