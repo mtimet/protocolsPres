@@ -8,19 +8,29 @@ import os.path
 import openpyxl
 import pandas as pd
 
+ROOT_OUT_PATH = './csvout'
+
 def process(directory, filename, force=False, noheader=False):
+    delegation = filename[:-5]
+    
     fin = os.path.join(directory, filename)
-    folderout = os.path.join('./csvout',directory[2:])
+    
+    circonscription = fin.split(os.sep)[-2]
+    
+    folderout = os.path.join(ROOT_OUT_PATH, directory[2:])
+    
     if not os.path.exists(folderout) : 
         os.makedirs(folderout)
-    fout = os.path.join(folderout, filename[:-5]+ '.csv')
+    fout = os.path.join(folderout, delegation + '.csv')
     if os.path.exists(fout) and not force:
         print ('not processing (%s,%s), because output file is already there %s'%(directory, filename, fout))
         return
     print('processing: ', directory, filename)
+    
     wb=openpyxl.load_workbook(fin)
     ws=wb.get_active_sheet()
     nums = [str(e) for e in range(10)]
+    firstcolumns = [circonscription, delegation]
     data = []
     headers = []
     FIRST_ROW = 6 if noheader else 7  
@@ -31,22 +41,32 @@ def process(directory, filename, force=False, noheader=False):
 
         line = [cell.value for cell in row if cell.value is not None and cell.value != '']
         if not noheader and row[0].row == FIRST_ROW:
-            headers = ['#', 'مكتب' ] + line
+            headers = ['circonscription','delegation','#', 'مكتب' ] + line
             headers = headers + ['مجموع الأصوات حسب المكتب']
         else:
-            data.append(line)
+            data.append(firstcolumns + line)
     df = pd.DataFrame(data=data) if noheader else pd.DataFrame(data=data,columns=headers)
     df.to_csv(fout, index=False)
+    return df
+
 def run():
     print('START')
     WITH_NOHEADER = ['ElMourouj.xlsx']#, 'Amdoun.xlsx']
+    agg = None
     for dirpath , dirnames, files in os.walk('.'):
         fs = [f for f in files if f[-5:] == '.xlsx']
         if len(fs) == 0 : continue
 
         for f in fs:
             noheader = f in WITH_NOHEADER
-            process(dirpath,f, noheader=noheader)
+            df = process(dirpath,f, noheader=noheader)
+            if agg is None:
+                agg = df
+            else:
+                agg = pd.concat([agg, df])
+
+    filename = os.path.join(ROOT_OUT_PATH, 'aggregate.csv')
+    agg.to_csv(filename, index=False)
     print('END')
 
 if __name__ == "__main__":
