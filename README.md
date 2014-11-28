@@ -20,3 +20,6 @@ the output will be saved to csvout
 
 	python tocsv.py 
 
+***Enrich with GIS coordinates***
+
+	python coord.py
