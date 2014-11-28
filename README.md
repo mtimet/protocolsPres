@@ -11,9 +11,12 @@ Presidential elections round 1 protocols
     python script.py 
 
 ***Convert xlslx to csv***
+
 the script needs python3. (easiest path to properly handle unicode strings)
+
 It depends on openpyxl and pandas libraries and their dependencies.
+
 the output will be saved to csvout
 
-	python tocsv.py (depending on your py3 install can be python3 tocsv.py) 
+	python tocsv.py 
 

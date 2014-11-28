@@ -9,6 +9,38 @@ import openpyxl
 import pandas as pd
 
 ROOT_OUT_PATH = './csvout'
+HEADERS = ['circonscription',
+ 'delegation',
+ '#',
+ 'مكتب',
+ 'العربي  نصرة',
+ 'عبد الرحيم  الزواري',
+ 'كلثوم  كنو',
+ 'كمال\xa0  مرجان',
+ 'سالم\xa0  الشايبي',
+ 'عبد الرزاق  الكيلاني',
+ 'محمد الباجي القايد السبسي',
+ 'سليم\xa0 الرياحي',
+ 'عبد القادر اللباوي',
+ 'مصطفى كامل  النابلي',
+ 'أحمد الصافي السعيد',
+ 'ياسين\xa0 \xa0الشنوفي',
+ 'أحمد نجيب \xa0 الشابي',
+ 'حمودة\xa0 بن سلامة',
+ 'علي المولدي الشورابي',
+ 'محمد\xa0 فريخة',
+ 'محمد الحامدي',
+ 'المختار  الماجري',
+ 'عبد الرؤوف العيادي',
+ 'محرز بوصيان',
+ 'مصطفى\xa0 بن جعفر',
+ 'نور الدين حشاد',
+ 'محمد المنذر الزنايدي',
+ 'محمد المنصف المرزوقي',
+ 'سمير العبدلي',
+ 'محمد الهاشمي الحامدي',
+ 'حمة\xa0 الهمامي',
+ 'مجموع الأصوات حسب المكتب']
 
 def process(directory, filename, force=False, noheader=False):
     delegation = filename[:-5]
@@ -40,18 +72,15 @@ def process(directory, filename, force=False, noheader=False):
             continue
 
         line = [cell.value for cell in row if cell.value is not None and cell.value != '']
-        if not noheader and row[0].row == FIRST_ROW:
-            headers = ['circonscription','delegation','#', 'مكتب' ] + line
-            headers = headers + ['مجموع الأصوات حسب المكتب']
-        else:
+        if  row[0].row != FIRST_ROW:
             data.append(firstcolumns + line)
-    df = pd.DataFrame(data=data) if noheader else pd.DataFrame(data=data,columns=headers)
+    df =  pd.DataFrame(data=data,columns=HEADERS)
     df.to_csv(fout, index=False)
     return df
 
 def run():
     print('START')
-    WITH_NOHEADER = ['ElMourouj.xlsx']#, 'Amdoun.xlsx']
+    WITH_NOHEADER = ['ElMourouj.xlsx']
     agg = None
     for dirpath , dirnames, files in os.walk('.'):
         fs = [f for f in files if f[-5:] == '.xlsx']
