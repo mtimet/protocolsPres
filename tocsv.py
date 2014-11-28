@@ -94,6 +94,8 @@ def run():
             else:
                 agg = pd.concat([agg, df])
 
+    BUREAUX = ['مكتب' + ' ' + str(i) for i in range(1,10)]
+    agg['center_name'] = agg['مكتب'].map(lambda s : s[:-6].strip() if s[-6:] in BUREAUX else s)
     filename = os.path.join(ROOT_OUT_PATH, 'aggregate.csv')
     agg.to_csv(filename, index=False)
     print('END')
